@@ -1,28 +1,27 @@
 
 \documentclass[12pt]{article}
-
 \usepackage[margin=1in]{geometry}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{natbib}
 \usepackage{setspace}
-
+\usepackage{fancyhdr}
+\pagestyle{plain}
+\fancyhf{}
+\chead{\small\texttt{https://github.com/Bishwa-R/peri-yasenov-2019\_replication}}
 \onehalfspacing
-
 \title{Replication of The Labor Market Effects of a Refugee Wave from Peri \& Yasenov (2019)}
 \author{Bishwa Rai}
 \date{\today}
-
 \begin{document}
-
 \maketitle
-
+\thispagestyle{fancy}
 \section{Introduction}
 
 This study replicates \textbf{The Labor Market Effects of a Refugee Wave: Synthetic Control Method Meets the Mariel Boatlift} written by \textbf{Giovanni Peri and Vasil Yasenov} and published in \textbf{The Journal of Human Resources, 2019}. The paper studies \textbf{whether the sudden 1980 influx of approximately 125,000 Cuban refugees depressed wages or employment for low-skilled workers already living in Miami}.
 
-The contribution of this paper is that it gets around the following challenge: \textbf{ Card (1990)'s original paper relied on somewhat arbitrary and ad-hoc selection of cities as a control group, and failed to account for city-level idiosyncratic shocks, treating within-city labor markets as independent.}. It does this by \textbf{applying the synthetic control method (SCM), which systematically constructs the control, "synthetic Miami", in a principled manner creating a more formally valid comparison}.
+The contribution of this paper is that it gets around the following challenge: Card (1990)'s original paper relied on somewhat arbitrary and ad-hoc selection of cities as a control group, and failed to account for city-level idiosyncratic shocks, treating within-city labor markets as independent. It does this by \textbf{applying the synthetic control method (SCM), which systematically constructs the control, "synthetic Miami", in a principled manner creating a more formally valid comparison}.
 
 This replication focuses on \textbf{Column (1) of Table 3} from the original paper. Specifically, the paper reports that \textbf{the coefficient on \textit{Miami}
 $\times$ (1981--1982) equals $\mathbf{-0.015}$ \textbf{(s.e. 0.042)}, indicating
@@ -33,7 +32,7 @@ dropouts in the two years immediately following the Boatlift}.
 
 The data are \textbf{May Current Population Survey (CPS) extracts (1973--1978)
 and the Merged Outgoing Rotational Group (ORG) CPS (1979--1991)} and contain information on \textbf{weekly earnings, age, sex, race, ethnicity, education, employment
-status, class of worker, and metropolitan area identifiers}. The sample includes \textbf{322,087} observations covering \textbf{34 metropolitan areas} over the period \textbf{1973--1991}.
+status, class of worker, and metropolitan area identifiers}. The sample includes \textbf{324,953} observations covering \textbf{34 metropolitan areas} over the period \textbf{1973--1991}.
 
 The data were originally collected by \textbf{U.S. Bureau of Labor Statistics} and made available by the \textbf{National Bureau of Economic Research}. The key variables used in the replication are \textbf{log real weekly wages} (deflated to 1980 dollars), \textbf{metropolitan
 area identifiers} (\texttt{smsarank}, \texttt{msafips}, and \texttt{cmsarank}),
@@ -80,18 +79,18 @@ where:
 The following table presents the replicated regression estimates alongside
 the paper's reported values.
 
-\input{../output/tables/main_result.tex}
+\input{tables/main_result.tex}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{../output/figures/main_figure.png}
+    \includegraphics[width=0.75\textwidth]{figures/main_figure.png}
     \caption{Log weekly wages of non-Cuban high school dropouts in Miami
     and its synthetic control, 1973--1991 (1980 USD). The dashed vertical
     line marks the Mariel Boatlift (1980).}
 \end{figure}
 
 The main thing to point out is \textbf{that the replicated coefficient on
-\textit{Miami} $\times$ (1981--1982) is $0.026$ (s.e. $0.041$), compared
+\textit{Miami} $\times$ (1981--1982) is $0.025$ (s.e. $0.041$), compared
 to the paper's reported value of $-0.015$ (s.e. $0.042$). In both cases
 the estimate is small and statistically indistinguishable from zero.}.
 
@@ -100,7 +99,7 @@ refugees in Miami in 1980 did not meaningfully depress wages for low-skilled
 incumbent workers in the years immediately following the Boatlift.  The paper similarly finds no significant effect on the unemployment rate of high school dropouts in Miami relative to its synthetic control, suggesting the labor market absorbed the shock on both the wage and employment margins}.
 
 Compared to the original paper, the replicated estimate is \textbf{slightly
-larger and positive} than the published slightly negative estimate. Possible reasons for this include \textbf{differences in the synthetic control donor pool (34 cities vs.\ the
+larger and positive} than the published slightly negative estimate. Possible reasons for this include \textbf{differences in the synthetic control donor pool (33 cities vs.\ the
 paper's 43), the absence of a manufacturing share predictor due to data
 limitations, and differences in how city identifiers are harmonized across
 the three coding schemes used in the CPS over 1973--1991.}.
@@ -144,7 +143,7 @@ The following would be the main takeaways of the paper:
     formally valid alternative to a difference-in-differences
     for case studies involving a single treated unit.
     \item Results from small subsamples and short pre-treatment matching
-    windows, such as Borjas (2017), are highly sensitive to measurement
+    windows, such as those in Borjas (2017), are highly sensitive to measurement
     error and thus should be interpreted with caution.
 \end{enumerate}
 
