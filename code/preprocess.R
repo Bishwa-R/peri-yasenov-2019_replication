@@ -71,8 +71,28 @@ sample <- cps %>%
   filter(!is.na(log_weekly_wage))
 
 # -- 4b. Add smsarank_num using crosswalk for 1986+ observations
-crosswalk <- readRDS("temp/smsarank_msafips_crosswalk.rds")
-cmsarank_cross <- readRDS("temp/cmsarank_smsarank_crosswalk.rds")
+# msafips to smsarank crosswalk (built from CPS variable labels)
+crosswalk <- data.frame(
+  smsarank_num = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                   16, 17, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29,
+                   30, 31, 32, 33, 34, 36, 38, 42, 44, 45, 46, 48, 49,
+                   53, 57),
+  msafips_num  = c(5600, 4480, 1600, 6160, 2160, 7360, 8840, 1120, 5380,
+                   6280, 7040, 720, 1680, 3360, 5640, 5120, 1920, 360,
+                   7320, 8280, 520, 1640, 1280, 3760, 5000, 2080, 6780,
+                   3480, 7400, 5560, 6440, 1840, 2800, 1000, 5720, 80,
+                   2960, 3120, 160, 6840, 6920, 4480, 875)
+)
+
+# cmsarank to smsarank crosswalk (built from CPS variable labels)
+cmsarank_cross <- data.frame(
+  cmsarank_num = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                   16, 17, 18, 19, 20, 21, 22, 24, 25, 27, 28, 29, 30,
+                   31, 32, 38, 43, 45, 46),
+  smsarank_num = c(1, 2, 3, 4, 6, 5, 8, 14, 7, 17, 13, 26, 10, 11, 21,
+                   16, 18, 19, 24, 33, 28, 22, 20, 27, 32, 36, 29, 30,
+                   31, 34, 38, 45, 48, 46)
+)
 
 sample <- sample %>%
   mutate(
