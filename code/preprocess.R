@@ -70,6 +70,29 @@ sample <- cps %>%
   ) %>%
   filter(!is.na(log_weekly_wage))
 
+# -- 4b. Add smsarank_num using crosswalk for 1986+ observations
+crosswalk <- readRDS("temp/smsarank_msafips_crosswalk.rds")
+cmsarank_cross <- readRDS("temp/cmsarank_smsarank_crosswalk.rds")
+
+sample <- sample %>%
+  mutate(
+    msafips_num  = as.numeric(msafips),
+    cmsarank_num = as.numeric(cmsarank)
+  ) %>%
+  left_join(crosswalk, by = "msafips_num") %>%
+  rename(smsarank_from_fips = smsarank_num) %>%
+  left_join(cmsarank_cross, by = "cmsarank_num") %>%
+  rename(smsarank_from_cmsa = smsarank_num) %>%
+  mutate(
+    smsarank_num = case_when(
+      !is.na(as.numeric(smsarank)) & as.numeric(smsarank) > 0 ~ as.numeric(smsarank),
+      !is.na(smsarank_from_fips) ~ smsarank_from_fips,
+      !is.na(smsarank_from_cmsa) ~ smsarank_from_cmsa,
+      TRUE ~ NA_real_
+    )
+  ) %>%
+  select(-smsarank_from_fips, -smsarank_from_cmsa)
+
 # -- 5. Write to temp/
 dir.create("temp", showWarnings = FALSE)
 saveRDS(sample, "temp/analysis_sample.rds")
@@ -82,3 +105,4 @@ cat("Mean log weekly wage:", round(mean(sample$log_weekly_wage), 3), "\n")
 cat("SD log weekly wage:", round(sd(sample$log_weekly_wage), 3), "\n")
 cat("N Miami obs:", sum(sample$miami), "\n")
 cat("Output written to temp/analysis_sample.rds\n")
+cat("N obs with city ID:", sum(!is.na(sample$smsarank_num)), "\n")
