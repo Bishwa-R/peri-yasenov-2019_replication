@@ -1,0 +1,176 @@
+
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{setspace}
+
+\onehalfspacing
+
+\title{Replication of The Labor Market Effects of a Refugee Wave from Peri \& Yasenov (2019)}
+\author{Bishwa Rai}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This study replicates \textbf{The Labor Market Effects of a Refugee Wave: Synthetic Control Method Meets the Mariel Boatlift} written by \textbf{Giovanni Peri and Vasil Yasenov} and published in \textbf{The Journal of Human Resources, 2019}. The paper studies \textbf{whether the sudden 1980 influx of approximately 125,000 Cuban refugees depressed wages or employment for low-skilled workers already living in Miami}.
+
+The contribution of this paper is that it gets around the following challenge: \textbf{ Card (1990)'s original paper relied on somewhat arbitrary and ad-hoc selection of cities as a control group, and failed to account for city-level idiosyncratic shocks, treating within-city labor markets as independent.}. It does this by \textbf{applying the synthetic control method (SCM), which systematically constructs the control, "synthetic Miami", in a principled manner creating a more formally valid comparison}.
+
+This replication focuses on \textbf{Column (1) of Table 3} from the original paper. Specifically, the paper reports that \textbf{the coefficient on \textit{Miami}
+$\times$ (1981--1982) equals $\mathbf{-0.015}$ \textbf{(s.e. 0.042)}, indicating
+no statistically significant negative effect on log weekly wages of high school
+dropouts in the two years immediately following the Boatlift}.
+
+\section{Data}
+
+The data are \textbf{May Current Population Survey (CPS) extracts (1973--1978)
+and the Merged Outgoing Rotational Group (ORG) CPS (1979--1991)} and contain information on \textbf{weekly earnings, age, sex, race, ethnicity, education, employment
+status, class of worker, and metropolitan area identifiers}. The sample includes \textbf{322,087} observations covering \textbf{34 metropolitan areas} over the period \textbf{1973--1991}.
+
+The data were originally collected by \textbf{U.S. Bureau of Labor Statistics} and made available by the \textbf{National Bureau of Economic Research}. The key variables used in the replication are \textbf{log real weekly wages} (deflated to 1980 dollars), \textbf{metropolitan
+area identifiers} (\texttt{smsarank}, \texttt{msafips}, and \texttt{cmsarank}),
+\textbf{ethnicity} (to exclude Cubans), and \textbf{education} (to identify
+high school dropouts).
+
+The original code is written in \textbf{Stata} and this replication reproduces
+the analysis in \textbf{R}.
+
+\section{Methods}
+
+The primary method is the \textbf{Synthetic Control Method (SCM)}, which constructs
+a weighted average of control cities whose pre-treatment outcomes best match those
+of the treated unit, in this case, Miami. The weights are chosen to minimize the
+pre-1980 difference between Miami and the synthetic control in terms of log weekly
+wages and demographic characteristics.
+
+The method identifies the causal effect of the Boatlift by exploiting the
+sudden, exogenous, and geographically concentrated nature of the refugee
+inflow as a quasi-experiment. Once the synthetic control is constructed,
+the authors run a feasible generalized least squares (FGLS) regression on
+the resulting two-city panel (Miami vs.\ synthetic control) to quantify
+and conduct inference on the post-Boatlift wage differential.
+
+The estimating equation used in the paper is shown below:
+
+\begin{equation}
+y_{it} = \alpha + \sum_{P \in \text{Pre-79}} \beta_P (D_P \times \text{Miami}_i)
++ \sum_{P \in \text{Post-80}} \beta_P (D_P \times \text{Miami}_i)
++ \sigma_i + \gamma_t + \varepsilon_{it}
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $y_{it}$ is the average log weekly wage of high school dropouts
+    in city $i$ in year $t$
+    \item $D_P \times \text{Miami}_i$ is an interaction between a period
+    dummy and a Miami indicator
+    \item $\sigma_i$ and $\gamma_t$ are city and year fixed effects
+\end{itemize}
+
+\section{Replication Results}
+
+The following table presents the replicated regression estimates alongside
+the paper's reported values.
+
+\input{tables/main_result.tex}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/main_figure.png}
+    \caption{Log weekly wages of non-Cuban high school dropouts in Miami
+    and its synthetic control, 1973--1991 (1980 USD). The dashed vertical
+    line marks the Mariel Boatlift (1980).}
+\end{figure}
+
+The main thing to point out is \textbf{that the replicated coefficient on
+\textit{Miami} $\times$ (1981--1982) is $0.026$ (s.e. $0.041$), compared
+to the paper's reported value of $-0.015$ (s.e. $0.042$). In both cases
+the estimate is small and statistically indistinguishable from zero.}.
+
+This result tells us in plain English that \textbf{the arrival of 125,000 Cuban
+refugees in Miami in 1980 did not meaningfully depress wages for low-skilled
+incumbent workers in the years immediately following the Boatlift.  The paper similarly finds no significant effect on the unemployment rate of high school dropouts in Miami relative to its synthetic control, suggesting the labor market absorbed the shock on both the wage and employment margins}.
+
+Compared to the original paper, the replicated estimate is \textbf{slightly
+larger and positive} than the published slightly negative estimate. Possible reasons for this include \textbf{differences in the synthetic control donor pool (34 cities vs.\ the
+paper's 43), the absence of a manufacturing share predictor due to data
+limitations, and differences in how city identifiers are harmonized across
+the three coding schemes used in the CPS over 1973--1991.}.
+
+\section{Challenges in Replication}
+
+The challenges in replicating the results were the following:
+
+\begin{itemize}
+   \item \textbf{City identifier fragmentation:} The CPS uses three
+    different metropolitan area coding schemes across the 1973--1991
+    period --- \texttt{smsarank} (1973--1985), \texttt{cmsarank}/\texttt{pmsarank}
+    (1986--1988), and \texttt{msafips} (1989--1991) --- requiring manual
+    crosswalks to be constructed, by checking against the original.
+    \item \textbf{May CPS variable names:} The 1973--1978 May CPS files
+    contain no variable names, only positional columns \texttt{x1}--\texttt{x200},
+    requiring a separate NBER codebook to identify earnings, age, education,
+    and other variables.
+    \item \textbf{Missing intermediate data:} The authors' replication
+    package does not include their pre-processed \texttt{aux\_may-org.dta}
+    dataset, requiring reconstruction from raw NBER files, all in a different software language.
+    \item \textbf{Inflation adjustment:} The authors deflate wages to
+    1980 dollars using year-specific CPI multipliers documented only
+    in their Stata code, not in the paper itself.
+\end{itemize}
+
+One important lesson from the replication process is that \textbf{reproducibility
+requires not just sharing code, but sharing all intermediate datasets and
+documenting every data transformation}.
+
+\section{Takeaways}
+
+The following would be the main takeaways of the paper:
+
+\begin{enumerate}
+\item The Mariel Boatlift had no statistically significant negative
+    effect on the wages of low-skilled incumbent workers in Miami,
+    confirming the original Card (1990) finding with a more rigorous
+    methodology.
+    \item The synthetic control method provides a more principled and
+    formally valid alternative to a difference-in-differences
+    for case studies involving a single treated unit.
+    \item Results from small subsamples and short pre-treatment matching
+    windows, such as Borjas (2017), are highly sensitive to measurement
+    error and thus should be interpreted with caution.
+\end{enumerate}
+
+Overall, the paper contributes to the literature by \textbf{providing
+methodologically rigorous evidence that local labor markets can absorb
+large, sudden immigrant inflows through complementarity, technology
+adjustment, and demand effects, without significant wage depression
+for incumbent workers.}.
+
+\section{Extensions}
+
+The following would be possible extensions of the paper:
+
+\begin{itemize}
+    \item \textbf{Climate migration:} As climate change accelerates
+    displacement, applying the SCM to modern refugee waves could
+    inform policy on labor market integration.
+    \item \textbf{Occupational heterogeneity:} Examining wage effects
+    separately by occupation or industry could reveal whether certain
+    sectors absorbed more of the competitive pressure from Mariel Cubans.
+    \item \textbf{Housing market spillovers:} Examining whether the Boatlift affected rents or housing prices in Miami.
+\end{itemize}
+
+Future work could also explore \textbf{the external validity of these findings by applying the synthetic control method to more recent refugee waves to test whether the null labor market effect is specific to Miami's economic context during the Mariel Boatlift or generalizes across settings}.
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}
