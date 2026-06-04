@@ -9,6 +9,23 @@ library(dplyr)
 may_files <- list.files("input", pattern = "^cpsmay.*\\.dta$", full.names = TRUE)
 may_data <- lapply(may_files, read_dta) %>% bind_rows()
 
+# -- 1b. Rename May CPS columns using codebook
+may_data <- may_data %>%
+  rename(
+    smsarank = x11,
+    age      = x67,
+    sex      = x70,
+    gradeat  = x72,
+    gradecp  = x73,
+    esr      = x75,
+    weight   = x80,
+    ethnic   = x85,
+    class    = x62,
+    earnwke  = x186,
+    year     = x200
+  ) %>%
+  mutate(weight = weight / 100)
+
 # -- 2. Load and combine ORG CPS (1979-1991)
 org_files <- list.files("input", pattern = "^morg.*\\.dta$", full.names = TRUE)
 org_data <- lapply(org_files, read_dta) %>% bind_rows()
