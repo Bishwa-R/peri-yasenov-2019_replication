@@ -27,7 +27,24 @@ sample <- cps %>%
     earnwke > 0
   ) %>%
   mutate(
-    log_weekly_wage = log(earnwke),
+    infl_factor = case_when(
+      year == 1979 ~ 1.135017842,
+      year == 1980 ~ 1.000000000,
+      year == 1981 ~ 0.905974729,
+      year == 1982 ~ 0.853418002,
+      year == 1983 ~ 0.827279757,
+      year == 1984 ~ 0.792654883,
+      year == 1985 ~ 0.765641264,
+      year == 1986 ~ 0.751039274,
+      year == 1987 ~ 0.725093956,
+      year == 1988 ~ 0.696537730,
+      year == 1989 ~ 0.664689936,
+      year == 1990 ~ 0.630523963,
+      year == 1991 ~ 0.605014431,
+      TRUE ~ 1.0
+    ),
+    earnwke_real = earnwke * infl_factor,
+    log_weekly_wage = log(earnwke_real),
     miami = as.integer(
       (as.numeric(smsarank) == 26 & !is.na(smsarank)) |
         (as.numeric(msafips) == 5000 & !is.na(msafips))
