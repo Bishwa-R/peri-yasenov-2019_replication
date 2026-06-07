@@ -66,3 +66,24 @@ Both estimates are statistically indistinguishable from zero, confirming the pap
 
 ## Repository Structure
 
+```
+peri-yasenov-2019_replication/
+├── input/
+│   ├── README.md              # Data download instructions
+│   ├── data_dictionary.md     # Variable descriptions
+│   └── sample_filtered.rds    # Pre-filtered sample (committed)
+├── code/
+│   ├── preprocess.R           # Load, clean, and save analysis sample
+│   └── analysis.R             # SCM + FGLS regression, outputs
+├── output/
+│   ├── figures/               # main_figure.png
+│   └── tables/                # main_result.tex
+├── temp/                      # Intermediate files (gitignored)
+├── paper/
+│   ├── paper.tex              # LaTeX source
+│   └── paper.pdf              # Compiled output
+├── Makefile
+├── run_all.sh
+├── proposal.md
+└── README.md
+```
